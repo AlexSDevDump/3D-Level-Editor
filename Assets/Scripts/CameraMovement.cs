@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
 
@@ -33,9 +31,28 @@ public class CameraMovement : MonoBehaviour
 
     public void Look()
     {
-        rotation.y += Input.GetAxis("Mouse X");
-        rotation.x += -Input.GetAxis("Mouse Y");
-        rotation.x = Mathf.Clamp(rotation.x, -15f, 15f);
-        transform.eulerAngles = new Vector2(rotation.x, rotation.y) * rotSpeed;
+        if (Input.GetAxisRaw("Rotation Lock") == 1)
+        {
+            HideCursor();
+            rotation.y += Input.GetAxis("Mouse X");
+            rotation.x += -Input.GetAxis("Mouse Y");
+            rotation.x = Mathf.Clamp(rotation.x, -15f, 15f);
+            transform.eulerAngles = new Vector2(rotation.x, rotation.y) * rotSpeed;
+        }
+        else
+        {
+            ShowCursor();
+        }
+    }
+
+    private void ShowCursor()
+    {
+        Cursor.lockState = CursorLockMode.None; //Weird bug where transitioning from locked to confined doesn't work
+        Cursor.lockState = CursorLockMode.Confined;
+    }
+
+    private void HideCursor()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
     }
 }
