@@ -7,6 +7,9 @@ public class SelectionController : MonoBehaviour
     [SerializeField]
     private GameObject objectSelected;
 
+    [SerializeField]
+    private float stepMod;
+
     private bool isArrowKeyDown = false;
 
     public enum TransformState
@@ -38,7 +41,7 @@ public class SelectionController : MonoBehaviour
             {
                 if(isArrowKeyDown == false)
                 {
-                    objectSelected.GetComponent<TranslateObject>().StepInput(arrowInput);
+                    objectSelected.GetComponent<TranslateObject>().StepInput(arrowInput * stepMod);
                     isArrowKeyDown = true;
                 }
             }     
