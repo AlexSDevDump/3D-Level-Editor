@@ -10,26 +10,12 @@ public class TranslateObject : MonoBehaviour
     private Vector3 currentScale;
     private float mzCoord;
     private Camera cam;
-    public enum TransformState
-    {
-        Rotation,
-        Translation,
-        Scale,
-    }
-
-    public TransformState state;
+    private SelectionController sel;
 
     void Start()
     {
-        state = TransformState.Translation;
+        sel = FindObjectOfType<SelectionController>();
         cam = Camera.main;
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.R)) { state = TransformState.Rotation; }
-        if (Input.GetKeyDown(KeyCode.T)) { state = TransformState.Translation; }
-        if (Input.GetKeyDown(KeyCode.Y)) { state = TransformState.Scale; }
     }
 
     void OnMouseDown()
@@ -41,15 +27,15 @@ public class TranslateObject : MonoBehaviour
 
     void OnMouseDrag()
     {
-        switch (state)
+        switch (sel.state)
         {
-            case TransformState.Translation:
+            case SelectionController.TransformState.Translation:
                 PositionDrag();
                 break;
-            case TransformState.Rotation:
+            case SelectionController.TransformState.Rotation:
                 RotationDrag();
                 break;
-            case TransformState.Scale:
+            case SelectionController.TransformState.Scale:
                 ScaleDrag();
                 break;
         }
@@ -79,5 +65,36 @@ public class TranslateObject : MonoBehaviour
         float scale = Mathf.Clamp((GetMouseWorldPos().x - transform.position.x) / scaleSpeedMod, 0.2f - currentScale.x, Mathf.Infinity);
 
         transform.localScale = new Vector3(scale, scale, scale) + currentScale; 
+    }
+
+    public void StepInput(Vector2 step)
+    {
+        switch (sel.state)
+        {
+            case SelectionController.TransformState.Translation:
+                PositionStep(step);
+                break;
+            case SelectionController.TransformState.Rotation:
+                RotationStep(step);
+                break;
+            case SelectionController.TransformState.Scale:
+                ScaleStep(step);
+                break;
+        }
+    }
+
+    private void PositionStep(Vector2 stepP)
+    {
+        transform.position += (Vector3)stepP;
+    }
+
+    private void RotationStep(Vector2 stepR)
+    {
+
+    }
+
+    private void ScaleStep(Vector2 stepS)
+    {
+
     }
 }
