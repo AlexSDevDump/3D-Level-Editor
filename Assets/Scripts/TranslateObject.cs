@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TranslateObject : MonoBehaviour
 {
@@ -50,7 +48,9 @@ public class TranslateObject : MonoBehaviour
 
     private void PositionDrag()
     {
-        transform.position = GetMouseWorldPos() + mOffset;
+        Vector3 positionRounded = GetMouseWorldPos() + mOffset;
+        positionRounded = positionRounded.Round(0);
+        transform.position = positionRounded;
     }    
     
     private void RotationDrag()
@@ -58,13 +58,19 @@ public class TranslateObject : MonoBehaviour
         float rotX = (GetMouseWorldPos().y - transform.position.y)  / rotationSpeedMod;
         float rotY = (-GetMouseWorldPos().x + transform.position.x)  / rotationSpeedMod;
         transform.Rotate(rotX, rotY, 0, Space.World);
+        Vector3 rotationRounded = transform.rotation.eulerAngles.Round(0);
+        transform.rotation = Quaternion.Euler(rotationRounded);
     }    
     
     private void ScaleDrag()
     {
         float scale = Mathf.Clamp((GetMouseWorldPos().x - transform.position.x) / scaleSpeedMod, 0.2f - currentScale.x, Mathf.Infinity);
+        Vector3 dragScaleRounded = Vector3.Scale(new Vector3(scale, scale, scale),  currentScale);
+        dragScaleRounded = dragScaleRounded.Round(0);
 
-        transform.localScale = new Vector3(scale, scale, scale) + currentScale; 
+        if (dragScaleRounded == Vector3.zero)
+            dragScaleRounded = Vector3.one;
+        transform.localScale = dragScaleRounded;
     }
 
     public void StepInput(Vector2 step)
@@ -96,5 +102,27 @@ public class TranslateObject : MonoBehaviour
     private void ScaleStep(Vector2 stepS)
     {
 
+    }
+}
+
+static class ExtensionMethods
+{
+    /// <summary>
+    /// Rounds Vector3.
+    /// </summary>
+    /// <param name="vector3"></param>
+    /// <param name="decimalPlaces"></param>
+    /// <returns></returns>
+    public static Vector3 Round(this Vector3 vector3, int decimalPlaces = 2)
+    {
+        float multiplier = 1;
+        for (int i = 0; i < decimalPlaces; i++)
+        {
+            multiplier *= 10f;
+        }
+        return new Vector3(
+            Mathf.Round(vector3.x * multiplier) / multiplier,
+            Mathf.Round(vector3.y * multiplier) / multiplier,
+            Mathf.Round(vector3.z * multiplier) / multiplier);
     }
 }
