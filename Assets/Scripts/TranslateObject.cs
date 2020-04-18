@@ -65,7 +65,7 @@ public class TranslateObject : MonoBehaviour
     private void ScaleDrag()
     {
         float scale = Mathf.Clamp((GetMouseWorldPos().x - transform.position.x) / scaleSpeedMod, 0.2f - currentScale.x, Mathf.Infinity);
-        Vector3 dragScaleRounded = Vector3.Scale(new Vector3(scale, scale, scale),  currentScale);
+        Vector3 dragScaleRounded = new Vector3(scale, scale, scale) + currentScale;
         dragScaleRounded = dragScaleRounded.Round(0);
 
         if (dragScaleRounded == Vector3.zero)
