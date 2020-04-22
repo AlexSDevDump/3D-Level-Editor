@@ -18,7 +18,6 @@ public class UITransformSetting : MonoBehaviour
     {
         sc = FindObjectOfType<SelectionController>();
         scale = Vector3.one;
-        InvokeRepeating("UpdateText", 0, 1);
     }
 
     public void UpdateX()
@@ -67,23 +66,6 @@ public class UITransformSetting : MonoBehaviour
         if (sc.GetSelectedObject != null)
         {
             sc.GetSelectedObject.transform.position = position;
-        }
-    }
-
-    private void UpdateText()
-    {
-        if (sc.GetSelectedObject != null)
-        {       
-            Transform temp = sc.GetSelectedObject.transform;
-            for (int i = 0; i < scaleInputs.Length; i++)
-            {
-                scaleInputs[i].text = temp.localScale[i].ToString();
-            }
-
-            for (int i = 0; i < posInputs.Length; i++)
-            {
-                posInputs[i].text = temp.position[i].ToString();
-            }
         }
     }
 }

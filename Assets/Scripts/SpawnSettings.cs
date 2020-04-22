@@ -5,9 +5,28 @@ public class SpawnSettings : MonoBehaviour
     [SerializeField]
     private GameObject obj;
 
-    public void SpawnObject()
+    //Rudimentary Shapes
+    private Mesh cube;
+    private Mesh sphere;
+    private Mesh triangle;
+
+    private SpawnObject spawner;
+
+    void Start()
     {
-        FindObjectOfType<SpawnObject>().SetObject(obj);
-        FindObjectOfType<SpawnObject>().SpawnInWorld();
+        spawner = FindObjectOfType<SpawnObject>();
+    }
+
+    public void SpawnObject(Mesh mesh)
+    {
+        obj.GetComponent<MeshFilter>().mesh = mesh;
+        spawner.SpawnInWorld(obj);
+    }
+
+    public void DestroySelectedObject()
+    {
+        SelectionController sc = FindObjectOfType<SelectionController>();
+        Destroy(sc.GetSelectedObject);
+        sc.SetSelectedObject(null);
     }
 }

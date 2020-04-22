@@ -18,8 +18,9 @@ public class SpawnObject : MonoBehaviour
         objToSpawn = obj;
     }
 
-    public void SpawnInWorld()
+    public void SpawnInWorld(GameObject obj)
     {
+        objToSpawn = obj;
         Vector3 spawnPos = cam.transform.position + spawnOffset;
 
         GameObject objSpawned = Instantiate(objToSpawn, spawnPos, Quaternion.identity);
