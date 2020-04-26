@@ -4,9 +4,7 @@ using System.IO;
 
 public class TextureLoader : MonoBehaviour
 {
-    string path;
-    [SerializeField]
-    private Texture2D tex;
+    private string path;
     [SerializeField]
     private Material material;
     private WWW w;
@@ -24,22 +22,42 @@ public class TextureLoader : MonoBehaviour
     private void FileExplorer()
     {
         path = EditorUtility.OpenFilePanel("Overwrite with png", "", "png");
+        SetObjectToTexture(GetImage(path), FindObjectOfType<SelectionController>().GetSelectedObject, true);
     }
 
-    private void GetImage()
+    public Texture2D GetImage(string path)
     {
         if (path != null)
         {
             w = new WWW("file:///" + path);
-            tex = w.texture;
+            return w.texture;
         }
+        else
+            return null;
     }
 
-    private void SetObjectToTexture()
+    public void SetObjectToTexture(Texture2D tex, GameObject objectToSet, bool usePath)
     {
-        GameObject go = FindObjectOfType<SelectionController>().GetSelectedObject;
+        GameObject go = objectToSet;
         if (go != null)
         {
+            string texCode;
+            if (usePath)
+            {
+                if (!path.Contains(Application.dataPath + "/Texture Files/"))
+                {
+                    texCode = NewTextureCode();
+                    SaveToDisk(tex, texCode);
+                }
+
+                else
+                {
+                    string[] split = path.Split('/');
+                    texCode = split[split.Length - 1].Split('.')[0];
+                }            
+                go.GetComponent<SelectObject>().SetTextureCode(texCode);      
+            }
+
             Material temp = new Material(material);
             temp.SetTexture("_MainTex", tex);
             go.GetComponent<MeshRenderer>().material = temp;
@@ -49,16 +67,13 @@ public class TextureLoader : MonoBehaviour
     public void TexButton()
     {
         FileExplorer();
-        GetImage();
-        SetObjectToTexture();
-        SaveToDisk();
     }
 
-    private void SaveToDisk()
+    private void SaveToDisk(Texture2D tex, string texCode)
     {
         var file = tex.EncodeToPNG();
-
-        File.WriteAllBytes(Application.dataPath + "/Texture Files/" + fileCounter + ".png", file);
+        string newTexCode = texCode + ".png";
+        File.WriteAllBytes(Application.dataPath + "/Texture Files/" + newTexCode, file);
         fileCounter++;
     }
 
@@ -73,5 +88,17 @@ public class TextureLoader : MonoBehaviour
         }
 
         return i;
+    }
+
+    private string NewTextureCode()
+    {
+        string texCode = "";
+
+        for (int i = 0; i < 9; i++)
+        {
+            texCode += (Random.Range(0, 10)).ToString();
+        }
+
+        return texCode;
     }
 }
