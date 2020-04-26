@@ -15,7 +15,6 @@ public class Importer : MonoBehaviour
     void Start()
     {
         mapDir = Application.dataPath + "/Map Files/";
-        ImportMap("test");
     }
 
     // Update is called once per frame
